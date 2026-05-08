@@ -19,4 +19,4 @@ services:
       # use one of these instead:
       - API_SERVER_CORS_ORIGINS=*
     command: ["gateway", "run"]
-
+    entrypoint: ["/usr/bin/tini","-g","--","/opt/hermes/docker/entrypoint.sh"]
