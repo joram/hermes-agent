@@ -6,24 +6,17 @@ services:
     restart: unless-stopped
     volumes:
       - ~/.hermes:/opt/data
+    ports:
+      - "9119:9119"   # dashboard (with HERMES_DASHBOARD=1)
     environment:
       - HERMES_UID=${HERMES_UID:-10000}
       - HERMES_GID=${HERMES_GID:-10000}
+      - HERMES_DASHBOARD=1
+      - API_SERVER_ENABLED=true
       - API_SERVER_HOST=0.0.0.0
       - API_SERVER_KEY=${API_SERVER_KEY}
+      # Avoid single quotes inside YAML list entries if Compose passes literal quotes;
+      # use one of these instead:
+      - API_SERVER_CORS_ORIGINS=*
     command: ["gateway", "run"]
 
-  dashboard:
-    image: hermes-agent
-    container_name: hermes-dashboard
-    restart: unless-stopped
-    depends_on:
-      - gateway
-    volumes:
-      - ~/.hermes:/opt/data
-    environment:
-      - HERMES_UID=${HERMES_UID:-10000}
-      - HERMES_GID=${HERMES_GID:-10000}
-    ports:
-      - 9119:9119
-    command: ["dashboard", "--host", "127.0.0.1", "--no-open"]
